@@ -88,3 +88,13 @@ app.get("/my-books/:email", verifyToken, async (req, res) => {
     .toArray();
   res.send(result);
 });
+
+// Update->
+app.put("/update-book/:id", verifyToken, async (req, res) => {
+  const { _id, email, username, ...updates } = req.body; // never overwrite owner fields
+  const result = await bookCollection.updateOne(
+    { _id: new ObjectId(req.params.id) },
+    { $set: updates },
+  );
+  res.send(result);
+});
