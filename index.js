@@ -121,3 +121,55 @@ app.get("/book-category/:category/:id", verifyToken, async (req, res) => {
     .toArray();
   res.send(result);
 });
+
+
+//...............New start................
+// Borrow a book
+app.post("/addtomycollection", verifyToken, async (req, res) => {
+  const { _id, ...book } = req.body;
+  const borrowDate = new Date();
+  const returnDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+
+  const result = await myBookCollection.insertOne({
+    bookId: _id,
+    ...book,
+    borrowDate,
+    returnDate,
+  });
+
+  // optional: reduce available copies (totalCopies must be a number in the DB)
+  await bookCollection.updateOne(
+    { _id: new ObjectId(_id) },
+    { $inc: { totalCopies: -1 } },
+  );
+
+  res.send(result);
+});
+
+// Show all borrowed books by specific email
+app.get("/showmycollection/:email", verifyToken, async (req, res) => {
+  const email = req.params.email;
+  const result = await myBookCollection.find({ email: email }).toArray();
+  res.send(result);
+});
+
+// Return a book
+app.delete("/returnbook/:id", verifyToken, async (req, res) => {
+  const record = await myBookCollection.findOne({
+    _id: new ObjectId(req.params.id),
+  });
+  const result = await myBookCollection.deleteOne({
+    _id: new ObjectId(req.params.id),
+  });
+
+  if (record?.bookId) {
+    await bookCollection.updateOne(
+      { _id: new ObjectId(record.bookId) },
+      { $inc: { totalCopies: 1 } },
+    );
+  }
+
+  res.send(result);
+});
+
+//.........................new end................
