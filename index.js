@@ -98,3 +98,13 @@ app.put("/update-book/:id", verifyToken, async (req, res) => {
   );
   res.send(result);
 });
+
+//single book findout by id
+//http://localhost:5000/book/:id
+app.get("/single-book/:id", verifyToken, async (req, res) => {
+  const { id } = req.params;
+  const result = await bookCollection.findOne({
+    _id: new ObjectId(id),
+  });
+  res.send(result);
+});
