@@ -60,3 +60,15 @@ const mongoClient = await connectToMongoDB();
 const db = mongoClient.db("book-nook");
 const bookCollection = db.collection("allbooks");
 const myBookCollection = db.collection("myBorrowBooks");
+
+
+// add book from frontend
+//http://localhost:5000/add-book
+app.post("/add-book", verifyToken, async (req, res) => {
+  const data = req.body;
+  const result = await bookCollection.insertOne(data);
+  console.log("Api: ", data);
+  console.log("Api Result: ", result);
+  res.send({ message: "Api working..." });
+  res.send(result);
+});
