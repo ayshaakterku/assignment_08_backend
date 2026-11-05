@@ -108,3 +108,16 @@ app.get("/single-book/:id", verifyToken, async (req, res) => {
   });
   res.send(result);
 });
+
+// book findout by category
+//http://localhost:5000/book/:category
+app.get("/book-category/:category/:id", verifyToken, async (req, res) => {
+  const { category, id } = req.params;
+  const result = await bookCollection
+    .find({
+      category: category,
+      _id: { $ne: new ObjectId(id) },
+    })
+    .toArray();
+  res.send(result);
+});
