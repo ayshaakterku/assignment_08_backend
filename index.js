@@ -173,3 +173,30 @@ app.delete("/returnbook/:id", verifyToken, async (req, res) => {
 });
 
 //.........................new end................
+
+// findout newest book by entry date at database
+app.get("/newest-books", async (req, res) => {
+  try {
+    const books = await bookCollection
+      .find()
+      .sort({ createdAt: -1 })
+      .limit(6)
+      .toArray();
+
+    res.status(200).send(books);
+  } catch (error) {
+    res.status(500).send({ message: "Failed to fetch newest books" });
+  }
+});
+
+
+//http://localhost:5000/
+app.get("/", (req, res) => {
+  res.send({ message: `Server running at Port: ${PORT}` });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is working on: ${PORT}`);
+});
+
+export default app;
