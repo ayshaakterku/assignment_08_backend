@@ -61,7 +61,6 @@ const db = mongoClient.db("book-nook");
 const bookCollection = db.collection("allbooks");
 const myBookCollection = db.collection("myBorrowBooks");
 
-
 // add book from frontend
 //http://localhost:5000/add-book
 app.post("/add-book", verifyToken, async (req, res) => {
@@ -72,7 +71,6 @@ app.post("/add-book", verifyToken, async (req, res) => {
   res.send({ message: "Api working..." });
   res.send(result);
 });
-
 
 // show all books
 app.get("/all-book", async (req, res) => {
@@ -99,6 +97,15 @@ app.put("/update-book/:id", verifyToken, async (req, res) => {
   res.send(result);
 });
 
+// Delete
+app.delete("/delete-book/:id", verifyToken, async (req, res) => {
+  const { id } = req.params;
+  const result = await bookCollection.deleteOne({
+    _id: new ObjectId(id),
+  });
+  res.send(result);
+});
+
 //single book findout by id
 //http://localhost:5000/book/:id
 app.get("/single-book/:id", verifyToken, async (req, res) => {
@@ -121,7 +128,6 @@ app.get("/book-category/:category/:id", verifyToken, async (req, res) => {
     .toArray();
   res.send(result);
 });
-
 
 //...............New start................
 // Borrow a book
