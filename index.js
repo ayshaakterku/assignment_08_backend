@@ -43,3 +43,20 @@ const verifyToken = async (req, res, next) => {
     });
   }
 };
+
+const client = new MongoClient(process.env.MONGODB_URI);
+export async function connectToMongoDB() {
+  try {
+    await client.connect();
+    console.log("You successfully connected to MongoDB!");
+    return client;
+  } catch (err) {
+    console.dir(err);
+  }
+}
+
+// data sent to database, create db and collection
+const mongoClient = await connectToMongoDB();
+const db = mongoClient.db("book-nook");
+const bookCollection = db.collection("allbooks");
+const myBookCollection = db.collection("myBorrowBooks");
