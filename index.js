@@ -79,3 +79,12 @@ app.get("/all-book", async (req, res) => {
   const result = await bookCollection.find().toArray();
   res.send(result);
 });
+
+// all books findout by email-> my books
+// Books added by one user (you already have this)
+app.get("/my-books/:email", verifyToken, async (req, res) => {
+  const result = await bookCollection
+    .find({ email: req.params.email })
+    .toArray();
+  res.send(result);
+});
