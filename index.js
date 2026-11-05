@@ -72,3 +72,10 @@ app.post("/add-book", verifyToken, async (req, res) => {
   res.send({ message: "Api working..." });
   res.send(result);
 });
+
+
+// show all books
+app.get("/all-book", async (req, res) => {
+  const result = await bookCollection.find().toArray();
+  res.send(result);
+});
